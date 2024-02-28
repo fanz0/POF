@@ -4,9 +4,50 @@ const Order = require("../models/order.model");
 // Controllers creation
 const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find({})
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    let orders = await Order.find({})
+      .skip(skip)
+      .limit(limit)
       .populate("users", "name")
       .populate("products", "name");
+    // Filters
+    if (req.query) {
+      let date;
+      const { productId } = req.query;
+
+      if (req.query.date) {
+        date = new Date(req.query.date);
+      }
+
+      if (productId && date) {
+        orders = await Order.find({
+          date: { $gte: date },
+          products: productId,
+        })
+          .skip(skip)
+          .limit(limit)
+          .populate("users", "name")
+          .populate("products", "name");
+      } else if (date) {
+        orders = await Order.find({
+          date: { $gte: date },
+        })
+          .skip(skip)
+          .limit(limit)
+          .populate("users", "name")
+          .populate("products", "name");
+      } else if (productId) {
+        orders = await Order.find({
+          products: productId,
+        })
+          .skip(skip)
+          .limit(limit)
+          .populate("users", "name")
+          .populate("products", "name");
+      }
+    }
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -59,40 +100,10 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-const filterForData = async (req, res) => {
-  try {
-    const date = new Date(req.params.date);
-    const orders = await Order.find({
-      date: { $gte: date },
-    })
-      .populate("users", "name")
-      .populate("products", "name");
-    res.status(200).json(orders);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const filterForProduct = async (req, res) => {
-  try {
-    const id = req.params.productId;
-    const orders = await Order.find({
-      products: id,
-    })
-      .populate("users", "name")
-      .populate("products", "name");
-    res.status(200).json(orders);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 module.exports = {
   getOrders,
   getOrder,
   createOrder,
   updateOrder,
   deleteOrder,
-  filterForData,
-  filterForProduct,
 };

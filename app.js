@@ -4,6 +4,7 @@ const routerUsers = require("./routes/usersRoute");
 const routerProducts = require("./routes/productsRoute");
 const routerOrders = require("./routes/ordersRoute");
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 // Initialize Express
 const app = express();
@@ -18,7 +19,7 @@ app.use("/api/orders", routerOrders);
 /* Database connect.
 Rememeber to insert the connection string of your mongoDB database */
 mongoose
-  .connect("connection string")
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("Connected to database!");
     app.listen(3000);

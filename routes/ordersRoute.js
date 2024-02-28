@@ -7,18 +7,12 @@ const {
   createOrder,
   updateOrder,
   deleteOrder,
-  filterForData,
-  filterForProduct,
 } = require("../controllers/order.controller");
 
 // Router paths
 router.get("/", getOrders);
 
 router.get("/:id", getOrder);
-
-router.get("/date/:date", filterForData);
-
-router.get("/product/:productId", filterForProduct);
 
 router.post("/", createOrder);
 
