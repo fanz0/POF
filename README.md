@@ -18,7 +18,7 @@ First of all You have to:
 2. Create a Database with MongoDB (https://www.mongodb.com/atlas/database)
 
 - Check all the informations and then copy the **connection string** ad the **password**.
-- Paste in `app.js` in the right place with the password in the right field (it is explained by MongoDB).
+- Create a file named `.env` and paste your connection string in a variable named **MONGODB_URI** like this `MONGODB_URI = "connection string"`.
 
 3. Run the server with `npm run dev` and check that all is connected through console.
 4. Use an API tester, like Postman, to check all the functionalities.
@@ -131,16 +131,22 @@ PUT localhost:3000/api/orders/:id
 DELETE localhost:3000/api/order/:id
 ```
 
-- Filter all orders by date using a specific date (:date)
+- Filter all orders by date using a specific date
 
 ```http
-GET localhost:3000/api/orders/date/:date
+GET localhost:3000/api/orders?date=YYYY-MM-DD
 ```
 
-- Filter all orders by product using the product's id (:id)
+- Filter all orders by product using the product's id
 
 ```http
-GET localhost:3000/api/orders/product/:id
+GET localhost:3000/api/orders?productId=<id>
+```
+
+- Filter all orders by product's id and by a specific date
+
+```http
+GET localhost:3000/api/orders?productId=<id>&date=YYYY-MM-DD
 ```
 
 ## Orders Fields
